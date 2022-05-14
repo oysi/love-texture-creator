@@ -107,8 +107,8 @@ end
 function love.update()
 end
 
-os.execute("explorer %appdata%\\LOVE\\love-texture-creator\\textures")
-
-love.event.quit()
+os.execute('powershell "' .. arg[1] .. "\\open-explorer.ps1" .. '"')
 
 print("done!")
+
+love.event.quit()

@@ -11,6 +11,10 @@ local imagedata = love.image.newImageData(3840, 2160)
 local info = Info(imagedata)
 
 Map(info, function()
+	if true then
+		return math.random(), math.random(), math.random(), 1
+	end
+	
 	local xmin = 20*2
 	local xmax = (info.w - 1) - 20*2
 	local x = info.x - xmin

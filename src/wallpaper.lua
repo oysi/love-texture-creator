@@ -7,19 +7,145 @@ end
 local e = 2.71828182845904523536
 local pi = math.pi
 
-local imagedata = love.image.newImageData(3840, 2160)
+local W = 3840
+local H = 2160
+
+local imagedata = love.image.newImageData(W, H)
 
 local info = Info(imagedata)
 
-local canvas = love.graphics.newCanvas(3840, 2160)
+local canvas = love.graphics.newCanvas(W, H)
 
-local w = 3840
-local h = 2160
+local function get_icon(i, j)
+	local off_x = 22*2
+	local off_y = 7*2
+	
+	local size_x = 32*2
+	local size_y = 32*2
+	
+	local pad_x = 44*2
+	local pad_y = 52*2
+	
+	return
+		off_x + (size_x + pad_x)*(i - 1),
+		off_y + (size_y + pad_y)*(j - 1),
+		size_x,
+		size_y
+end
 
 love.graphics.setCanvas(canvas)
+local c = 8/255
+love.graphics.clear(c, c, c, 1.00)
 
-love.graphics.setColor(0, 0, 0)
-love.graphics.rectangle("fill", 0, 0, w, h)
+-- love.graphics.setColor(0, 0, 0, 1)
+-- love.graphics.rectangle("fill", 0, 0, W, H)
+
+love.graphics.setLineWidth(1)
+
+local ICON_BORDER = 2
+
+local grid = {
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0};
+	{0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0};
+	{0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0};
+	{0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+}
+
+local grid = {
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0};
+	{0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0};
+	{0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+	{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1};
+}
+
+for i = 1, 25 do
+	for j = 1, 12 do
+		local x, y, w, h = get_icon(i, j)
+		-- if (i >= 4 and i <= 22 and j >= 4 and j <= 9)
+		-- if i <= 3 or i >= 23 or j <= 3 or j >= 10 or (i >= 11 and i <= 15)
+		-- or (i == 25 and j == 12)
+		if grid[j][i] == 1 then
+			-- love.graphics.rectangle("line", x, y, w, h)
+			
+			x = x - 2
+			y = y - 2
+			w = w + 4
+			h = h + 4
+			
+			local c = 16/255
+			love.graphics.setColor(c, c, c, 1)
+			love.graphics.rectangle("fill", x, y, w, h)
+			
+			love.graphics.setColor(0.6, 0.6, 0.6, 1.0)
+			love.graphics.rectangle("fill", x, y, ICON_BORDER, h)
+			love.graphics.rectangle("fill", x, y, w, ICON_BORDER)
+			
+			love.graphics.setColor(0.4, 0.4, 0.4, 1.0)
+			love.graphics.rectangle("fill", x + w - 2, y, ICON_BORDER, h)
+			love.graphics.rectangle("fill", x, y + h - 2, w, ICON_BORDER)
+		end
+	end
+end
+
+
+local function print_shadow(text, x, y)
+	love.graphics.setColor(0, 0, 0, 1)
+	love.graphics.print(text, x + 2, y + 2)
+	love.graphics.setColor(1, 1, 1, 1)
+	love.graphics.print(text, x, y)
+end
+
+
+-- Games
+local x, y = get_icon(18, 3)
+
+love.graphics.setNewFont("font/Roboto-Regular.ttf", 48)
+print_shadow("Games", x, y - (48 + 52*2)/2)
+
+
+
+-- Programs
+local x, y = get_icon(18, 7)
+
+love.graphics.setNewFont("font/Roboto-Regular.ttf", 48)
+print_shadow("Programs", x, y - (48 + 52*2)/2)
+
+
+
+-- Temp
+local x, y = get_icon(3, 3)
+
+love.graphics.setNewFont("font/Roboto-Regular.ttf", 48)
+print_shadow("Temp", x, y - (48 + 52*2)/2)
+
+
+
+-- Temp
+-- local x, y = get_icon(19, 3)
+
+-- love.graphics.setNewFont("font/Roboto-Regular.ttf", 48)
+-- love.graphics.setColor(1, 1, 1, 1)
+-- love.graphics.print("Temp", x, y - (48 + 52*2)/2)
+
+
+
+
 
 -- love.graphics.setColor(0, 1, 0)
 -- love.graphics.rectangle("fill", 0, h - 48*2, w, 48*2)
@@ -31,69 +157,3 @@ love.graphics.rectangle("fill", 0, 0, w, h)
 love.graphics.setCanvas()
 
 return canvas:newImageData()
-
--- Map(info, function()
--- 	if true then
--- 		return math.random(), math.random(), math.random(), 1
--- 	end
-	
--- 	local xmin = 20*2
--- 	local xmax = (info.w - 1) - 20*2
--- 	local x = info.x - xmin
--- 	local xt = x/(xmax - xmin)
-	
--- 	local ymin = 20*2
--- 	local ymax = (info.h - 1) - 20*2
--- 	local y = (info.h - 1 - info.y) - xmin
--- 	local yt = y/(xmax - xmin)
-	
-	
-	
--- 	local x = info.x - 20
-	
--- 	local ymin = 48*2 + 20*2
--- 	local ymax = 1080*2 - 20*2
--- 	local yt = ((info.h - 1 - info.y) - ymin)/(ymax - 1 - ymin)
-	
--- 	local xmin = 20*2
--- 	local xmax = info.w - 20*2
--- 	local xt = (info.x - xmin)/(xmax - 1 - xmin)
-	
--- 	local gray_dist = math.min(math.abs(xt*100), math.abs(yt*100), math.abs(1 - xt)*100, math.abs(1 - yt)*100)
--- 	local t = 1 - gray_dist/4
--- 	if t > 0 then
--- 		return t, t, t, 1
--- 	end
-	
--- 	if (xt >= 0 and xt <= 1) and (yt >= 0 and yt <= 1) then
--- 		return 0, 0, 0, 1
--- 	else
--- 		return 0, 0, 0, 1
--- 	end
-	
-	
-	
--- 	if true then
--- 		if xt == 1 then
--- 			return 1, 1, 0, 1
--- 		elseif xt == 0 then
--- 			return 1, 0, 1, 1
--- 		end
--- 		if xt >= 0 and xt <= 1 then
--- 			return 1, 1, 1, 1
--- 		else
--- 			return 0, 0, 0, 1
--- 		end
--- 	end
-	
--- 	local y = (e^info.xt - 1)/(e - 1)
--- 	local dif = math.abs((1 - (-0.1 + 1.2*info.yt)) - y)
-	
--- 	local t = 1/dif
-	
--- 	local c = t*0.05*0.05
-	
--- 	return c, c, c, 1
--- end)
-
--- return imagedata

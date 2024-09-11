@@ -8,6 +8,6 @@ local imagedata = love.image.newImageData(256, 256)
 
 local info = Info(imagedata)
 
-Bar(info, 150, 16)
+Bar(info, 224, 24)
 
 return imagedata
